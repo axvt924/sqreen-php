@@ -45,10 +45,10 @@ PHP_RINIT_FUNCTION(sqreen)
 	zval *value = NULL;
 
     // Retrieve SERVER infos
-	if (zend_is_auto_global_str("_SERVER", sizeof("_SERVER") - 1) == 1) {
+	if (zend_is_auto_global_str(ZEND_STRL("_SERVER")) == 1) {
         // Retrieve REQUEST_URI
         if ((data = zend_hash_str_find(Z_ARRVAL(PG(http_globals)[TRACK_VARS_SERVER]),
-                        "REQUEST_URI", sizeof("REQUEST_URI") - 1))) {
+                        ZEND_STRL("REQUEST_URI")))) {
             if (sqreen_sqli(data) < 0) {
                 return FAILURE;
             }
@@ -56,11 +56,11 @@ PHP_RINIT_FUNCTION(sqreen)
 
         // Retrieve METHOD
         if ((data = zend_hash_str_find(Z_ARRVAL(PG(http_globals)[TRACK_VARS_SERVER]),
-                        "REQUEST_METHOD", sizeof("REQUEST_METHOD") - 1))) {
+                        ZEND_STRL("REQUEST_METHOD")))) {
             if (Z_TYPE_P(data) == IS_STRING) {
-                if (strncasecmp(Z_STRVAL_P(data), "GET", sizeof("GET") -1) == 0) {
+                if (strncasecmp(Z_STRVAL_P(data), ZEND_STRL("GET")) == 0) {
                     // Retrieve GET infos
-                    if (zend_is_auto_global_str("_GET", sizeof("_GET") - 1) == 1) {
+                    if (zend_is_auto_global_str(ZEND_STRL("_GET")) == 1) {
                         ZEND_HASH_FOREACH_VAL(Z_ARRVAL(PG(http_globals)[TRACK_VARS_GET]), value) {
                             if (sqreen_sqli(value) < 0) {
                                 return FAILURE;
@@ -68,9 +68,9 @@ PHP_RINIT_FUNCTION(sqreen)
                         } ZEND_HASH_FOREACH_END();
                     }
 
-                } else if (strncasecmp(Z_STRVAL_P(data), "POST", sizeof("POST") -1) == 0) {
+                } else if (strncasecmp(Z_STRVAL_P(data), ZEND_STRL("POST")) == 0) {
                     // Retrieve POST infos
-                    if (zend_is_auto_global_str("_POST", sizeof("_POST") - 1) == 1) {
+                    if (zend_is_auto_global_str(ZEND_STRL("_POST")) == 1) {
                         ZEND_HASH_FOREACH_VAL(Z_ARRVAL(PG(http_globals)[TRACK_VARS_POST]), value) {
                             if (sqreen_sqli(value) < 0) {
                                 return FAILURE;
@@ -83,7 +83,7 @@ PHP_RINIT_FUNCTION(sqreen)
     }
 
     // Retrieve COOKIE infos
-    if (zend_is_auto_global_str("_COOKIE", sizeof("_COOKIE") - 1) == 1) {
+    if (zend_is_auto_global_str(ZEND_STRL("_COOKIE")) == 1) {
         ZEND_HASH_FOREACH_VAL(Z_ARRVAL(PG(http_globals)[TRACK_VARS_COOKIE]), value) {
             if (sqreen_sqli(value) < 0) {
                 return FAILURE;
